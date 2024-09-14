@@ -59,7 +59,7 @@ model PasswordResetToken{
   id   String @id @default(cuid())
   email String
   token String @unique
-  expiers DateTime 
+  expires DateTime 
 
   @@unique([email,token])
 }

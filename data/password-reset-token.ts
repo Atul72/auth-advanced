@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const getPasswordResetToken = async (token: string) => {
+export const getPasswordResetTokenByToken = async (token: string) => {
   try {
     const passwordResetToken = await db.passwordResetToken.findUnique({
       where: {
@@ -14,7 +14,7 @@ export const getPasswordResetToken = async (token: string) => {
   }
 };
 
-export const getPasswordResetEmail = async (email: string) => {
+export const getPasswordResetTokenByEmail = async (email: string) => {
   try {
     const passwordResetToken = await db.passwordResetToken.findFirst({
       where: {
