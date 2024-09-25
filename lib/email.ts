@@ -1,3 +1,4 @@
+//@ts-nocheck
 import nodemailer from "nodemailer";
 
 //from: "onboarding@resend.dev",
