@@ -11,6 +11,7 @@ export const {
   auth,
   signIn,
   signOut,
+  unstable_update, // this thing to update the user in server actions
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -65,7 +66,7 @@ export const {
         session.user.email = token.email as string;
         session.user.isOAuth = token.isOauth as boolean;
       }
-      console.log(session.user);
+
       return session;
     },
     async jwt({ token }) {

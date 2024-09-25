@@ -1,5 +1,5 @@
+//@ts-nocheck
 "use client";
-
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,9 +34,7 @@ import { FormError } from "@/components/form-error";
 import { UserRole } from "@prisma/client";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-export const Settings = () => {
-  const user = useCurrentUser();
-
+export const Settings = ({ user, account }) => {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const { update } = useSession();
@@ -50,10 +48,12 @@ export const Settings = () => {
       name: user?.name || undefined,
       email: user?.email || undefined,
       role: user?.role || undefined,
+      iSTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
     },
   });
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+    console.log({ values });
     startTransition(() => {
       settings(values)
         .then((data) => {
@@ -95,7 +95,7 @@ export const Settings = () => {
                   </FormItem>
                 )}
               />
-              {user?.isOAuth === false && (
+              {account === false && (
                 <>
                   <FormField
                     control={form.control}
@@ -177,27 +177,30 @@ export const Settings = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="isTwoFactorEnabled"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>Two Factor Authentication</FormLabel>
-                      <FormDescription>
-                        Enable Two factor authentication for your account
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        disabled={isPending}
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+
+              {account === false && (
+                <FormField
+                  control={form.control}
+                  name="iSTwoFactorEnabled"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Two Factor Authentication</FormLabel>
+                        <FormDescription>
+                          Enable Two-factor authentication for your account
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          disabled={isPending}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
